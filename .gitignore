@@ -1,0 +1,24 @@
+## 5. .gitignore
+
+```gitignore
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
