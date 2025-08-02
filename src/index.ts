@@ -22,6 +22,7 @@ import {
   validateUser,
 } from "./exercises/module2";
 import { displayUser } from "./exercises/module3";
+import ProductService, { orderService } from "./exercises/module4";
 
 function module1() {
   console.log("Exercises - Module 1 output:\n");
@@ -112,4 +113,33 @@ function module3() {
   );
 }
 
-module3();
+function module4() {
+  console.log("Module 4 Exercise Outputs: \n");
+
+  console.log(ProductService.getAllProducts());
+  console.log(ProductService.getProductById(3));
+
+  console.log("order Creation simulation...\n");
+  console.log(
+    orderService.createOrder({
+      userId: 3,
+      productIds: [3, 4],
+    })
+  );
+
+  console.log(
+    orderService.createOrder({
+      userId: -1,
+      productIds: [-3, -6],
+    })
+  );
+
+  console.log(
+    orderService.createOrder({
+      userId: 1,
+      productIds: [3, -4],
+    })
+  );
+}
+
+module4();

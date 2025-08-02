@@ -68,3 +68,55 @@ interface PostResponse extends CreatePostDto {
   readonly updatedAt: Date;
   viewCount: number;
 }
+
+/*
+
+Exercise 3: Type Aliases for API Responses (Medium)
+Create type aliases for a REST API:
+
+HttpStatus - union type for: 200, 201, 400, 401, 404, 500
+ApiMethod - union type for: "GET", "POST", "PUT", "DELETE", "PATCH"
+ApiResponse<T> - generic type with:
+
+data (of type T)
+status (HttpStatus)
+message (string)
+timestamp (Date)
+
+
+
+Then create a function createApiResponse that takes data of any type and returns an ApiResponse.
+
+*/
+
+type HttpStatus = 200 | 201 | 400 | 401 | 404 | 500;
+type ApiMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+
+// creating the generic type
+type ApiResponse<T> = {
+  data: T;
+  status: HttpStatus;
+  message: string;
+  timestamp: Date;
+};
+
+export function createApiResponse<T>(
+  data: unknown,
+  guard: (data: unknown) => data is T
+): ApiResponse<T | null> {
+  if (guard(data)) {
+    return {
+      data,
+      status: 200,
+      message: "Success",
+      timestamp: new Date(),
+    };
+  } else {
+    return {
+      data: null,
+      status: 400,
+      message: "Invalid data provided",
+      timestamp: new Date(),
+    };
+  }
+}
