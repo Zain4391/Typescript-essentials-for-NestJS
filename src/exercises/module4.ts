@@ -220,3 +220,121 @@ class OrderService {
 const userService = new UserService();
 const productService = new ProductService();
 export const orderService = new OrderService(userService, productService);
+
+/* 
+
+Exercise 3: Abstract Base Repository (Advanced)
+Objective: Create reusable abstract class with generics.
+
+Create abstract BaseService<T> with:
+// - Protected items array of type T[]
+// - Abstract method create(data: Omit<T, 'id'>): Promise<T>
+// - Concrete method findAll(): Promise<T[]>
+// - Concrete method findById(id: number): Promise<T>
+// - Protected method generateId(): number
+
+*/
+
+abstract class BaseService<T> {
+  protected items: T[] = [];
+
+  // must be implemented by the sub class!
+  abstract create(data: Omit<T, "id">): Promise<T>;
+
+  // concrete methods defined here will be inehrited as it is
+
+  async findAll(): Promise<T[]> {
+    return [...this.items]; // return a copy
+  }
+
+  async findById(id: number) {
+    const resp = this.items.find((i: any) => i.id === id);
+    return resp;
+  }
+
+  protected generateId(): number {
+    return this.items.length > 0
+      ? Math.max(...this.items.map((item: any) => item.id)) + 1
+      : 1;
+  }
+}
+
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+}
+
+class CategoryService extends BaseService<Category> {
+  async create(categoryData: Omit<Category, "id">): Promise<Category> {
+    const category: Category = {
+      id: this.generateId(),
+      ...categoryData,
+    };
+
+    // save category
+    this.items.push(category);
+    return category;
+  }
+
+  // additional method
+  async findByName(name: string) {
+    return this.items.find((category) => category.name === name);
+  }
+}
+
+export const categoryService = new CategoryService();
+
+/*
+Exercise 4: Static Utilities and Configuration (Intermediate)
+Objective: Use static methods and properties for shared utilities.
+
+// Create a ValidationHelper class with static methods:
+// - isValidEmail(email: string): boolean
+// - isValidPassword(password: string): boolean (min 8 chars, 1 number, 1 uppercase)
+// - DEFAULT_PASSWORD_MIN_LENGTH static property
+// - validateUserData(userData: CreateUserDto): string[] (returns array of error messages)
+
+*/
+
+interface CreateUserDto {
+  name: string;
+  email: string;
+  password: string;
+}
+
+class ValidationHelper {
+  static readonly DEFAULT_PASSWORD_MIN_LENGTH = 8;
+
+  static isValidEmail(email: string): boolean {
+    return email.endsWith("@gmail.com") || email.endsWith("@outlook.com");
+  }
+
+  static isValidPassword(password: string) {
+    const hasNumber = /[0-9]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLength =
+      password.length > ValidationHelper.DEFAULT_PASSWORD_MIN_LENGTH;
+
+    return hasLength && hasNumber && hasUpper;
+  }
+
+  validateUserData(userData: CreateUserDto): string[] {
+    let errors: string[] = [];
+
+    const isValidEmail = ValidationHelper.isValidEmail(userData.email);
+    const isValidPassword = ValidationHelper.isValidPassword(userData.password);
+
+    if (!isValidEmail) {
+      errors.push("Invalide Email format");
+    }
+
+    if (!isValidPassword) {
+      errors.push("Please enter a valid password!");
+    }
+
+    return errors;
+  }
+}
+
+export const validator = new ValidationHelper();

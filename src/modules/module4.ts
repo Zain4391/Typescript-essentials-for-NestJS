@@ -98,3 +98,25 @@ class Userrepository extends BaseRepository<USER> {
     return this.items.find((user) => user.email === email);
   }
 }
+
+class DatabaseConfig {
+  // Static property - shared across all instances
+  static readonly DEFAULT_PORT = 5432;
+  static readonly DEFAULT_HOST = "localhost";
+
+  // Static method - utility function
+  static createConnectionString(host?: string, port?: number): string {
+    return `postgresql://${host || this.DEFAULT_HOST}:${
+      port || this.DEFAULT_PORT
+    }/mydb`;
+  }
+
+  // Instance method can access static members
+  getConnection(): string {
+    return DatabaseConfig.createConnectionString();
+  }
+}
+
+// Usage - no need to create an instance
+console.log(DatabaseConfig.DEFAULT_PORT); // 5432
+console.log(DatabaseConfig.createConnectionString("prod-db", 5433));

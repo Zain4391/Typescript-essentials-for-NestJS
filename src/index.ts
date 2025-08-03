@@ -22,7 +22,12 @@ import {
   validateUser,
 } from "./exercises/module2";
 import { displayUser } from "./exercises/module3";
-import ProductService, { orderService } from "./exercises/module4";
+import ProductService, {
+  categoryService,
+  orderService,
+  validator,
+} from "./exercises/module4";
+import { calcObj, mathObj } from "./exercises/module5";
 
 function module1() {
   console.log("Exercises - Module 1 output:\n");
@@ -140,6 +145,40 @@ function module4() {
       productIds: [3, -4],
     })
   );
+
+  console.log(
+    categoryService.create({
+      name: "Sports",
+      description: "Sports goods",
+    })
+  );
+
+  console.log(
+    categoryService.create({
+      name: "Shoes",
+      description: "Comfort in Office",
+    })
+  );
+
+  // Won't get Promis {} as response - May appear after console logs from below!
+  categoryService.findById(1).then(console.log);
+  categoryService.findByName("Shoes").then(console.log);
+
+  console.log(
+    validator.validateUserData({
+      name: "Zain Rasool",
+      email: "zainrasool@outlook.com",
+      password: "Zainrasool123",
+    })
+  );
 }
 
-module4();
+function module5() {
+  console.log("Module 5 exercises: \n");
+  console.log(calcObj.add(3, 4));
+
+  console.log(mathObj.divide(4, 2));
+  console.log(mathObj.sqrt(9));
+}
+
+module5();
